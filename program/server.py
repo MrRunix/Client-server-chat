@@ -8,7 +8,7 @@ while 1:
     data, addres = sock.recvfrom(1024) #принимаем сообщение с адресом отправления
     data = str(data.decode('utf-8')) #дешифруем само сообщение
     print(data, addres)
-    if (('$' in data) and ('connection users?' in data)) or ('connection users?' in data) and ('-to ' in data) or ('$' in data) and ('-to ' in data): #проверка пользователя на адекватность
+    if (('$' in data) and ('/users?' in data)) or ('/users?' in data) and ('-to ' in data) or ('$' in data) and ('-to ' in data): #проверка пользователя на адекватность
         sock.sendto('Пожалуйста, проверьте правильность написания флагов и их наличие'.encode('utf-8'), addres)
     if addres not in xnames_adds.keys(): #проверяем, есть ли такой такой пользователь
         print("prof")
@@ -31,7 +31,7 @@ while 1:
                 continue
             else:
                 sock.sendto((f'From {xnames_adds.get(addres)}: {data} (all)').encode('utf-8'), client)
-    elif '/users?' == data: #проверка на команду выдачи пользователей в сети
+    elif '/users?' in data: #проверка на команду выдачи пользователей в сети
         usrs = ''
         for i in xnames_adds.values(): # избавляемся от лишнего синтаксиса
             usrs = usrs + f'{i} \n' 
@@ -43,7 +43,7 @@ while 1:
             sock.sendto(('Пользователь не найден(').encode('utf-8'), addres)
         print(s[1], addres)
         if xnames_adds.get(addres) == s[1]: # проверка на отправление самому себе
-            print('oaoao')
+            print('oaoao', addres)
             sock.sendto('Тебе настолько одиноко? \nСходи прогуляйся, че ты здесь торчишь?'.encode('utf-8'), addres)
         else:
             for clin in xnames_adds.keys(): # поиск адреса отправки
@@ -51,11 +51,13 @@ while 1:
                     s = s[2::]
                     data = ''.join(map(str, s))#пересобираем сообщение в комфортный вид
                     sock.sendto((f'From {xnames_adds.get(addres)}: {data} (personal)').encode('utf-8'), clin)
-                    break # на всякий, чтоб небыло выхода за цикл
+                    break
     elif ('down server' in data) and (xnames_adds.get(addres) == 'serveradmin'): #проверка на адекватность администратора сервера
+        print('9')
         print('Server down, thks admin)')
         break
     else:
+        print(10)
         sock.sendto('Пожалуйста, проверьте правильность написания флагов и их наличие)'.encode('utf-8'), addres)
 
 for i in xnames_adds.keys(): #отправка сообщений об отключении сервера

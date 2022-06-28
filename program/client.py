@@ -32,9 +32,10 @@ sleep(1)
 global thread_stop #попытка научиться стопорить поток
 
 def read_msg(): #функция для чтения входящих сообщений
-    data = sock.recv(1024)
-    data = str(data.decode('utf-8'))
-    print('\n' + data)
+    while 1:
+        data = sock.recv(1024)
+        data = str(data.decode('utf-8'))
+        print('\n' + data)
 
 thread = threading.Thread(target=read_msg)#через потоки запускаем функцию
 thread.start()
